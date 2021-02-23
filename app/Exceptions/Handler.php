@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Domain\Exceptions\InvalidMatrixException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -13,7 +14,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+        InvalidMatrixException::class,
     ];
 
     /**

@@ -1847,6 +1847,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 window.Vue = vue__WEBPACK_IMPORTED_MODULE_0__.default;
+console.log('bla');
 vue__WEBPACK_IMPORTED_MODULE_0__.default.component('matrix-multiplier', function (resolve, reject) {
   __webpack_require__.e(/*! AMD require */ "resources_js_components_MatrixMultiplier_vue").then(function() { var __WEBPACK_AMD_REQUIRE_ARRAY__ = [__webpack_require__(/*! ./components/MatrixMultiplier.vue */ "./resources/js/components/MatrixMultiplier.vue")]; (resolve).apply(null, __WEBPACK_AMD_REQUIRE_ARRAY__);}.bind(this)).catch(__webpack_require__.oe);
 });
