@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\Matrix;
 
 
+use App\Domain\Calculators\MatrixCalculator;
 use App\Domain\Calculators\MatrixMultiplier;
 use App\Domain\Entities\Matrix;
 use App\Domain\Exceptions\InvalidMatrixException;
@@ -12,7 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Response;
 
 class MultiplierController extends Controller
 {
@@ -26,25 +27,28 @@ class MultiplierController extends Controller
         ]);
 
         $calculator = $this->makeCalculator($request);
+        $resultMatrix = $calculator->calculate();
 
-        $resultMatrix = $calculator->multiply();
-
-
+        return response()->json(['result' => $resultMatrix], Response::HTTP_OK);
     }
 
     /**
      * @param Request $request
      * @return MatrixMultiplier
      */
-    private function makeCalculator(Request $request): MatrixMultiplier
+    private function makeCalculator(Request $request): MatrixCalculator
     {
         $leftMatrix = new Matrix($request->input('left'));
         $topMatrix = new Matrix($request->input('top'));
 
-        $matrixCalculator =  (new MatrixMultiplier())
-            ->setLeft($leftMatrix)->setTop($topMatrix);
+        /** @var MatrixCalculator $matrixCalculator */
+        $matrixCalculator = app()->make(MatrixCalculator::class);
 
-        if (!$matrixCalculator->canMultiply()) {
+        $matrixCalculator
+            ->setLeft($leftMatrix)
+            ->setTop($topMatrix);
+
+        if (!$matrixCalculator->canCalculate()) {
             throw new InvalidMatrixException('left row length must be equal to top column length');
         }
 

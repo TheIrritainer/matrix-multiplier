@@ -7,8 +7,10 @@ namespace App\Domain\Calculators;
 use App\Domain\Entities\Matrix;
 use Illuminate\Support\Collection;
 
-class MatrixMultiplier
+class MatrixMultiplier implements MatrixCalculator
 {
+    private const ROUND_PRECISION = 2;
+
     private Matrix $left;
 
     private Matrix $top;
@@ -40,7 +42,7 @@ class MatrixMultiplier
      * @param Matrix $top
      * @return bool
      */
-    public function canMultiply(): bool
+    public function canCalculate(): bool
     {
         if (!isset($this->left, $this->top)) {
             throw new \RuntimeException('Missing dependencies for calculator');
@@ -52,7 +54,7 @@ class MatrixMultiplier
     /**
      * @return Matrix
      */
-    public function multiply(): Matrix
+    public function calculate(): Matrix
     {
         $topRowLength = $this->top->getRowLength();
         $leftColumnLength = $this->left->getColumnLength();
@@ -72,7 +74,12 @@ class MatrixMultiplier
         return $resultingMatrix;
     }
 
-    private function getCellValue(int $rowIndex, int $columnIndex)
+    /**
+     * @param int $rowIndex
+     * @param int $columnIndex
+     * @return float
+     */
+    private function getCellValue(int $rowIndex, int $columnIndex): float
     {
         $leftRow = $this->left->getRow($rowIndex);
 
@@ -81,7 +88,12 @@ class MatrixMultiplier
         return $this->multiplyCollections($leftRow, $topColumn);
     }
 
-    private function multiplyCollections(Collection $row, Collection $column)
+    /**
+     * @param Collection $row
+     * @param Collection $column
+     * @return float
+     */
+    private function multiplyCollections(Collection $row, Collection $column): float
     {
         $value = 0;
         $rowLength = $row->count();
@@ -90,7 +102,7 @@ class MatrixMultiplier
             $value += $row->get($i) * $column->get($i);
         }
 
-        return $value;
+        return round($value, self::ROUND_PRECISION);
     }
 
 

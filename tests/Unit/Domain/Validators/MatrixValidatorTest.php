@@ -17,7 +17,7 @@ class MatrixValidatorTest extends TestCase
         $passes = $matrixValidator->passes('iamnot', 'anarray');
 
         $this->assertFalse($passes);
-        $this->assertEquals('The :attribute must be a 2d array with numerical values.', $matrixValidator->message());
+        $this->assertEquals('The :attribute must be a 2d array.', $matrixValidator->message());
     }
 
     /** @test */
@@ -28,7 +28,7 @@ class MatrixValidatorTest extends TestCase
         $passes = $matrixValidator->passes('matrix', ['scalar']);
 
         $this->assertFalse($passes);
-        $this->assertEquals('The :attribute must be a 2d array with numerical values.', $matrixValidator->message());
+        $this->assertEquals('The :attribute must be a 2d array.', $matrixValidator->message());
 
     }
 
@@ -40,7 +40,7 @@ class MatrixValidatorTest extends TestCase
         $passes = $matrixValidator->passes('matrix', [[0,1], [2, 'foo']]);
 
         $this->assertFalse($passes);
-        $this->assertEquals('The :attribute must be a 2d array with numerical values.', $matrixValidator->message());
+        $this->assertEquals('The :attribute must strictly contain numerical values.', $matrixValidator->message());
     }
 
     /** @test */

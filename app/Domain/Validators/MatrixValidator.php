@@ -11,10 +11,11 @@ use Illuminate\Contracts\Validation\Rule;
  */
 class MatrixValidator implements Rule
 {
-    private const ERROR_NO_ARRAY = 'The :attribute must be a 2d array with numerical values.';
+    private const ERROR_NO_ARRAY = 'The :attribute must be a 2d array.';
+    private const ERROR_NEEDS_NUMERICAL = 'The :attribute must strictly contain numerical values.';
     private const ERROR_ROW_LENGTH_MISMATCH = 'Each row of :attribute must have the same length.';
 
-    private string $error;
+    private ?string $error = null;
 
 
     /**
@@ -24,20 +25,26 @@ class MatrixValidator implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        if (!$this->isValidArray($value) ) {
+        $this->checkArrayValidity($value);
+
+        return $this->error === null;
+    }
+
+    /**
+     * @param $value
+     */
+    private function checkArrayValidity($value): void
+    {
+        if (!$this->isValidArray($value)) {
+
             $this->error = self::ERROR_NO_ARRAY;
+        } else if (!$this->hasNumericalValues($value)) {
 
-            return false;
-        }
-        else if (! $this->hasMatchingRowLengths($value))
-        {
+            $this->error = self::ERROR_NEEDS_NUMERICAL;
+        } else if (!$this->hasMatchingRowLengths($value)) {
+
             $this->error = self::ERROR_ROW_LENGTH_MISMATCH;
-
-            return false;
         }
-
-
-        return true;
     }
 
     /**
@@ -54,9 +61,7 @@ class MatrixValidator implements Rule
      */
     private function isValidArray($value): bool
     {
-        return is_array($value) &&
-            $this->isMultiDimensional($value) &&
-            $this->hasNumericalValues($value);
+        return is_array($value) && $this->isMultiDimensional($value);
     }
 
     /**
