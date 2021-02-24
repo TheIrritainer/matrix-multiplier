@@ -8,7 +8,7 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
         <link href="{{ mix('css/app.css') }}" rel="stylesheet" >
 
         <!-- Styles -->
@@ -25,7 +25,11 @@
     <body class="antialiased">
       <div id="app">
 
-        <matrix-multiplier></matrix-multiplier>
+          <div class="matrix-container">
+
+              <matrix-multiplier></matrix-multiplier>
+
+          </div>
 
       </div>
     </body>

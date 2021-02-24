@@ -1,3 +1,107 @@
-body {
+@import "~bulma";
+@import "~buefy/src/scss/buefy.scss";
+
+$max_mobile_width: 768px;
+
+h1,  h4 {
+    text-align: center;
+    font-size: revert;
+    font-weight: revert;
+}
+
+div.matrix-container {
+    max-width: 800px;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+
+    margin-bottom: auto;
+
+    margin-top: 4rem;
+
+}
+
+div.columns.matrix-quadrant {
+
+    margin: 0px;
+    padding: 0px;
+
+    div.column.matrix-cell {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        img.matrix-image, img.error-image {
+
+            margin-bottom: 24px;
+            margin-top: 24px;
+            width: 128px;
+            min-width: 128px;
+            height: auto;
+
+        }
+    }
+}
+
+
+div.flex-grid {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    div.grid-row {
+        display: flex;
+        position: relative;
+
+        &:not(:last-child)
+        {
+            margin-bottom: 4px;
+        }
+
+
+
+        div.row-head, div.cell-value {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            width: 48px;
+        }
+
+        div.button-add-column, div.button-remove-column, div.button-add-row, div.button-remove-row  {
+            position: absolute;
+
+            cursor: pointer;
+            &.disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+
+        div.button-add-column {
+            top: 0px;
+            right: -25px;
+        }
+
+        div.button-remove-column {
+            top: 0px;
+            right: -8px;
+        }
+
+
+        div.button-add-row {
+            top: -8px;
+            right: -22px;
+        }
+
+        div.button-remove-row {
+            top: -25px;
+            right: -22px;
+        }
+
+    }
+
 
 }
