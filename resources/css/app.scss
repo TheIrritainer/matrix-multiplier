@@ -82,26 +82,77 @@ div.flex-grid {
 
         div.button-add-column {
             top: 0px;
-            right: -25px;
+            right: -11px;
         }
 
         div.button-remove-column {
             top: 0px;
-            right: -8px;
+            left: 37px;
         }
 
 
         div.button-add-row {
-            top: -8px;
+            top: -23px;
             right: -22px;
         }
 
         div.button-remove-row {
-            top: -25px;
+            top: -40px;
             right: -22px;
         }
 
     }
 
 
+}
+
+div.excel-letter-switch {
+    text-align: center;
+}
+
+
+
+.loader-overlay {
+    bottom: 0;
+    left: 0;
+    z-index: 99999;
+    position: fixed;
+    right: 0;
+    top: 0;
+    align-items: center;
+    display: none;
+    justify-content: center;
+    overflow: hidden;
+
+}
+
+.loader-overlay.is-active {
+    display: flex
+}
+
+.loader-overlay .loader-background {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: #9999cc;
+    opacity: 0.25;
+    z-index: 100000;
+}
+
+.loader-overlay .loader-icon-holder {
+    position: relative;
+    z-index: 100001;
+    background-color: rgba(255,255,255,0.8);
+    border-radius: 10px;
+
+    .loader-icon {
+        margin: 5px 30px;
+        img {
+            width: 80px;
+            height: auto;
+        }
+
+    }
 }

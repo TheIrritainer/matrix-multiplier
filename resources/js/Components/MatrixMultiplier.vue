@@ -2,6 +2,8 @@
 
 import Matrix from "./Matrix";
 
+import MatrixIcons from "../Constants/MatrixIcons";
+
 export default {
     name: "matrix-multiplier",
     components: {Matrix},
@@ -13,7 +15,10 @@ export default {
             topMatrix: null,
             resultMatrix: null,
 
+            useExcelLetters: false,
 
+
+            iconIndex: 0,
         }
 
     },
@@ -46,6 +51,22 @@ export default {
             return result;
         },
 
+        getMatrixIcon()
+        {
+            const icon = MatrixIcons[this.iconIndex];
+
+            return `/img/${icon}`;
+        },
+
+        updateMatrixIcon()
+        {
+            this.iconIndex++;
+            if (this.iconIndex >= MatrixIcons.length)
+            {
+                this.iconIndex = 0;
+            }
+        },
+
         multiplyMatrix() {
 
             const payload = {
@@ -59,6 +80,8 @@ export default {
             axios.post('/api/multiplier', payload).then((response) => {
 
                 this.resultMatrix = response.data.result;
+
+                this.updateMatrixIcon();
 
             }).catch((reason) => {
                 this.hasError = true;
@@ -124,7 +147,7 @@ export default {
 
         <div class="columns matrix-quadrant">
             <div class="column is-6 matrix-cell">
-                <img src="/img/morpheus.svg" class="matrix-image"/>
+                <img :src="getMatrixIcon()" class="matrix-image"/>
             </div>
             <div class="column is-6 matrix-cell top-matrix">
                 <h4>Top matrix</h4>
@@ -149,12 +172,13 @@ export default {
                 </div>
                 <div v-if="resultMatrix">
                     <h4>Result matrix</h4>
-                    <matrix v-model="resultMatrix" :readonly="true"></matrix>
+                    <matrix v-model="resultMatrix" :readonly="true" :as-excel-letters="useExcelLetters"></matrix>
                 </div>
 
             </div>
 
         </div>
+        <div class="excel-letter-switch"> <b-switch v-model="useExcelLetters">Show result in "excel" letters</b-switch></div>
     </div>
 </template>
 <style scoped>

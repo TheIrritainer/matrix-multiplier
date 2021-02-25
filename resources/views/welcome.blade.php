@@ -24,7 +24,12 @@
     </head>
     <body class="antialiased">
       <div id="app">
-
+          <div id="loader" class="loader-overlay" :class="{'is-active': loaderActive}">
+              <div class="loader-background"></div>
+              <div class="loader-icon-holder">
+                  <div class="loader-icon"><img src="/img/spinner.svg"/></div>
+              </div>
+          </div>
           <div class="matrix-container">
 
               <matrix-multiplier></matrix-multiplier>

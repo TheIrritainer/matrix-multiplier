@@ -5,10 +5,6 @@ export default {
         value: {
             type: Number,
             default: 0,
-        },
-        readonly: {
-            type: Boolean,
-            default: false,
         }
     },
     name: "cell",
@@ -50,10 +46,7 @@ export default {
 </script>
 <template>
     <div class="cell-value">
-        <span v-if="readonly">
-            <strong>{{ number }}</strong>
-        </span>
-        <b-field v-if="! readonly">
+        <b-field >
             <b-input type="number" v-model="number"  size="is-small" step="0.01" :validation-message="null" >
 
             </b-input>

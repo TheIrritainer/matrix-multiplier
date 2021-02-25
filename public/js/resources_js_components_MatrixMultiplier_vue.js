@@ -16,10 +16,6 @@ __webpack_require__.r(__webpack_exports__);
     value: {
       type: Number,
       "default": 0
-    },
-    readonly: {
-      type: Boolean,
-      "default": false
     }
   },
   name: "cell",
@@ -71,6 +67,10 @@ __webpack_require__.r(__webpack_exports__);
       "default": []
     },
     readonly: {
+      type: Boolean,
+      "default": false
+    },
+    asExcelLetters: {
       type: Boolean,
       "default": false
     }
@@ -147,6 +147,14 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.colLength = this.grid[0].length;
+    },
+    formatCell: function formatCell(number) {
+      if (!this.asExcelLetters) {
+        return number;
+      }
+
+      number = Math.floor(parseInt(number));
+      return number > 0 ? this.toExcelLetters(number) : '';
     }
   },
   watch: {
@@ -175,6 +183,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _Matrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Matrix */ "./resources/js/components/Matrix.vue");
+/* harmony import */ var _Constants_MatrixIcons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Constants/MatrixIcons */ "./resources/js/Constants/MatrixIcons.js");
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "matrix-multiplier",
@@ -186,7 +196,9 @@ __webpack_require__.r(__webpack_exports__);
       hasError: false,
       leftMatrix: null,
       topMatrix: null,
-      resultMatrix: null
+      resultMatrix: null,
+      useExcelLetters: false,
+      iconIndex: 0
     };
   },
   created: function created() {
@@ -196,7 +208,6 @@ __webpack_require__.r(__webpack_exports__);
     initMatrices: function initMatrices() {
       this.topMatrix = this.createMatrix(3, 3);
       this.leftMatrix = this.createMatrix(3, 3);
-      console.log(this.topMatrix, this.leftMatrix);
     },
     createMatrix: function createMatrix(rows, cols) {
       var result = [];
@@ -213,6 +224,17 @@ __webpack_require__.r(__webpack_exports__);
 
       return result;
     },
+    getMatrixIcon: function getMatrixIcon() {
+      var icon = _Constants_MatrixIcons__WEBPACK_IMPORTED_MODULE_1__.default[this.iconIndex];
+      return "/img/".concat(icon);
+    },
+    updateMatrixIcon: function updateMatrixIcon() {
+      this.iconIndex++;
+
+      if (this.iconIndex >= _Constants_MatrixIcons__WEBPACK_IMPORTED_MODULE_1__.default.length) {
+        this.iconIndex = 0;
+      }
+    },
     multiplyMatrix: function multiplyMatrix() {
       var _this = this;
 
@@ -224,6 +246,8 @@ __webpack_require__.r(__webpack_exports__);
       this.resultMatrix = null;
       axios.post('/api/multiplier', payload).then(function (response) {
         _this.resultMatrix = response.data.result;
+
+        _this.updateMatrixIcon();
       })["catch"](function (reason) {
         _this.hasError = true;
 
@@ -265,6 +289,21 @@ __webpack_require__.r(__webpack_exports__);
     }
   }
 });
+
+/***/ }),
+
+/***/ "./resources/js/Constants/MatrixIcons.js":
+/*!***********************************************!*\
+  !*** ./resources/js/Constants/MatrixIcons.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (['morpheus.svg', 'matrix-scene.svg', 'neo.svg', 'niobe.svg', 'trinity.svg']);
 
 /***/ }),
 
@@ -504,33 +543,27 @@ var render = function() {
     "div",
     { staticClass: "cell-value" },
     [
-      _vm.readonly
-        ? _c("span", [_c("strong", [_vm._v(_vm._s(_vm.number))])])
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.readonly
-        ? _c(
-            "b-field",
-            [
-              _c("b-input", {
-                attrs: {
-                  type: "number",
-                  size: "is-small",
-                  step: "0.01",
-                  "validation-message": null
-                },
-                model: {
-                  value: _vm.number,
-                  callback: function($$v) {
-                    _vm.number = $$v
-                  },
-                  expression: "number"
-                }
-              })
-            ],
-            1
-          )
-        : _vm._e()
+      _c(
+        "b-field",
+        [
+          _c("b-input", {
+            attrs: {
+              type: "number",
+              size: "is-small",
+              step: "0.01",
+              "validation-message": null
+            },
+            model: {
+              value: _vm.number,
+              callback: function($$v) {
+                _vm.number = $$v
+              },
+              expression: "number"
+            }
+          })
+        ],
+        1
+      )
     ],
     1
   )
@@ -633,16 +666,30 @@ var render = function() {
                   "div",
                   { staticClass: "row-cell" },
                   [
-                    _c("cell", {
-                      attrs: { readonly: _vm.readonly },
-                      model: {
-                        value: _vm.grid[rowIndex][colIndex],
-                        callback: function($$v) {
-                          _vm.$set(_vm.grid[rowIndex], colIndex, $$v)
-                        },
-                        expression: "grid[rowIndex][colIndex]"
-                      }
-                    })
+                    !_vm.readonly
+                      ? _c("cell", {
+                          attrs: { readonly: _vm.readonly },
+                          model: {
+                            value: _vm.grid[rowIndex][colIndex],
+                            callback: function($$v) {
+                              _vm.$set(_vm.grid[rowIndex], colIndex, $$v)
+                            },
+                            expression: "grid[rowIndex][colIndex]"
+                          }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.readonly
+                      ? _c("div", { staticClass: "cell-value" }, [
+                          _c("strong", [
+                            _vm._v(
+                              _vm._s(
+                                _vm.formatCell(_vm.grid[rowIndex][colIndex])
+                              )
+                            )
+                          ])
+                        ])
+                      : _vm._e()
                   ],
                   1
                 )
@@ -718,7 +765,12 @@ var render = function() {
     _c("h1", [_vm._v(" Matrix multiplier")]),
     _vm._v(" "),
     _c("div", { staticClass: "columns matrix-quadrant" }, [
-      _vm._m(0),
+      _c("div", { staticClass: "column is-6 matrix-cell" }, [
+        _c("img", {
+          staticClass: "matrix-image",
+          attrs: { src: _vm.getMatrixIcon() }
+        })
+      ]),
       _vm._v(" "),
       _c("div", { staticClass: "column is-6 matrix-cell top-matrix" }, [
         _c("h4", [_vm._v("Top matrix")]),
@@ -783,7 +835,10 @@ var render = function() {
                 _c("h4", [_vm._v("Result matrix")]),
                 _vm._v(" "),
                 _c("matrix", {
-                  attrs: { readonly: true },
+                  attrs: {
+                    readonly: true,
+                    "as-excel-letters": _vm.useExcelLetters
+                  },
                   model: {
                     value: _vm.resultMatrix,
                     callback: function($$v) {
@@ -797,22 +852,31 @@ var render = function() {
             )
           : _vm._e()
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "excel-letter-switch" },
+      [
+        _c(
+          "b-switch",
+          {
+            model: {
+              value: _vm.useExcelLetters,
+              callback: function($$v) {
+                _vm.useExcelLetters = $$v
+              },
+              expression: "useExcelLetters"
+            }
+          },
+          [_vm._v('Show result in "excel" letters')]
+        )
+      ],
+      1
+    )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "column is-6 matrix-cell" }, [
-      _c("img", {
-        staticClass: "matrix-image",
-        attrs: { src: "/img/morpheus.svg" }
-      })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

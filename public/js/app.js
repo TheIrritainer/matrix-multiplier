@@ -1856,7 +1856,48 @@ vue__WEBPACK_IMPORTED_MODULE_0__.default.component('matrix-multiplier', function
   __webpack_require__.e(/*! AMD require */ "resources_js_components_MatrixMultiplier_vue").then(function() { var __WEBPACK_AMD_REQUIRE_ARRAY__ = [__webpack_require__(/*! ./components/MatrixMultiplier.vue */ "./resources/js/components/MatrixMultiplier.vue")]; (resolve).apply(null, __WEBPACK_AMD_REQUIRE_ARRAY__);}.bind(this)).catch(__webpack_require__.oe);
 });
 var app = new vue__WEBPACK_IMPORTED_MODULE_0__.default({
-  el: '#app'
+  el: '#app',
+  data: function data() {
+    return {
+      loaderActive: false,
+      activeRequests: 0
+    };
+  },
+  created: function created() {
+    this.bindAxios();
+  },
+  methods: {
+    bindAxios: function bindAxios() {
+      var _this = this;
+
+      axios.interceptors.request.use(function (config) {
+        _this.loaderActive = true;
+        _this.activeRequests++;
+        return config;
+      }, function (error) {
+        _this.closeLoader();
+
+        return Promise.reject(error);
+      });
+      axios.interceptors.response.use(function (response) {
+        _this.closeLoader();
+
+        return response;
+      }, function (error) {
+        _this.closeLoader();
+
+        return Promise.reject(error);
+      });
+    },
+    closeLoader: function closeLoader() {
+      this.activeRequests--;
+
+      if (this.activeRequests < 1) {
+        this.activeRequests = 0;
+        this.loaderActive = false;
+      }
+    }
+  }
 });
 
 /***/ }),

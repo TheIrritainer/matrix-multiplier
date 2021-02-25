@@ -12,7 +12,12 @@ export default {
         readonly: {
             type: Boolean,
             default: false,
-        }
+        },
+
+        asExcelLetters: {
+            type: Boolean,
+            default: false,
+        },
 
     },
     components: {Cell},
@@ -111,7 +116,20 @@ export default {
             }
 
             this.colLength = this.grid[0].length;
+        },
+
+        formatCell(number)
+        {
+            if (! this.asExcelLetters)
+            {
+                return number;
+            }
+
+            number = Math.floor(parseInt(number))
+
+            return number > 0 ? this.toExcelLetters(number) : '';
         }
+
 
     },
     watch: {
@@ -123,7 +141,7 @@ export default {
                 }
             },
 
-        }
+        },
     }
 
 }
@@ -143,8 +161,12 @@ export default {
             <div class="grid-row" v-for="(notUsedRow, rowIndex) in value">
 
                 <div class="row-head">{{ rowIndex + 1 }}</div>
-                <div class="row-cell" v-for="(notUsedCol, colIndex) in value[rowIndex]">
-                    <cell :readonly="readonly" v-model="grid[rowIndex][colIndex]"/>
+                <div class="row-cell" v-for="(notUsedCol, colIndex) in value[rowIndex]" >
+                    <cell :readonly="readonly" v-model="grid[rowIndex][colIndex]" v-if="! readonly" />
+                    <div class="cell-value" v-if="readonly">
+                        <strong>{{ formatCell(grid[rowIndex][colIndex]) }}</strong>
+
+                    </div>
                 </div>
             </div>
             <div v-if="! readonly" class="grid-row">
