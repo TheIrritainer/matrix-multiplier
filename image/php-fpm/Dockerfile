@@ -2,8 +2,8 @@ FROM php:7.4-fpm-alpine
 RUN apk update \
     && apk upgrade \
     && apk add curl \
-       nano \
-       autoconf \
+       nano git \
+       autoconf openssh \
        openssl-dev \
     && rm -rf /var/lib/apt/lists/* \
     ## CLEANUP
