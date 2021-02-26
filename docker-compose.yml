@@ -8,8 +8,10 @@ services:
       - "9000:9000"
     volumes:
       - ./:/var/www/app
+      - /var/www/app/vendor
     environment:
       - APP_ENV="local"
+      - APP_KEY="base64:qS3UqgqZsiYLlFxohhxWYd3xWhcWn7c+3b+HVmqvC6k="
   nginx:
     image: nginx:alpine
     ports:
@@ -20,8 +22,11 @@ services:
     links:
       - laravel-app
   front:
-    image: node:alpine
+    build:
+      dockerfile: ./image/node/Dockerfile
+      context: .
     volumes:
       - ./:/app
+      - /app/node_modules
     working_dir: /app
-    command: npm run watch-poll
+    command: ./start-front.sh
